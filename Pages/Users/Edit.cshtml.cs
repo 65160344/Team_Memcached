@@ -10,8 +10,10 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Memcach.Pages.Users
 {
+    // PageModel สำหรับแก้ไขข้อมูลผู้ใช้งาน พร้อมระบบ Cache
     public class EditModel : PageModel
     {
+        // ตัวแปรสำหรับเชื่อมต่อฐานข้อมูลและระบบ Cache
         private readonly MemcachContext _context;
         private readonly IMemoryCache _memoryCache;
 
@@ -24,8 +26,10 @@ namespace Memcach.Pages.Users
         [BindProperty]
         public User User { get; set; } = default!;
 
+        // Handler method สำหรับดึงข้อมูล User ที่จะแก้ไข
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            // สร้าง stopwatch สำหรับจับเวลาการทำงาน
             var stopwatch = new Stopwatch();
             stopwatch.Start(); // เริ่มจับเวลา
 
@@ -36,17 +40,17 @@ namespace Memcach.Pages.Users
                 return NotFound();
             }
 
-            // ลองดึงข้อมูลจากแคชก่อน
+            // ตรวจสอบข้อมูลในระบบ Cache ก่อน
             stopwatch.Restart();
             if (_memoryCache.TryGetValue($"User:{id}", out User cachedUser))
             {
                 User = cachedUser;
                 stopwatch.Stop();
                 Console.WriteLine($"[CACHE HIT] Time taken to retrieve from cache: {stopwatch.Elapsed.TotalMilliseconds} ms");
-                return Page(); // คืนค่าเพจที่มีข้อมูลในแคช
+                return Page();
             }
 
-            // หากไม่มีข้อมูลในแคชให้ดึงข้อมูลจากฐานข้อมูล
+            // ถ้าไม่มีใน Cache ให้ดึงจากฐานข้อมูล
             stopwatch.Restart();
             var user = await _context.User.FirstOrDefaultAsync(m => m.ID == id);
             stopwatch.Stop();
@@ -62,11 +66,13 @@ namespace Memcach.Pages.Users
             return Page();
         }
 
+        // Handler method สำหรับบันทึกข้อมูลที่แก้ไข
         public async Task<IActionResult> OnPostAsync()
         {
             var stopwatch = new Stopwatch();
-            stopwatch.Start(); // เริ่มจับเวลา
+            stopwatch.Start();
 
+            // ตรวจสอบความถูกต้องของข้อมูล
             if (!ModelState.IsValid)
             {
                 stopwatch.Stop();
@@ -74,9 +80,12 @@ namespace Memcach.Pages.Users
                 return Page();
             }
 
+            // อัปเดตเวลาเป็นเวลาปัจจุบัน
+            User.CreatedAt = DateTime.Now;
+            
             _context.Attach(User).State = EntityState.Modified;
 
-            // บันทึกเวลาที่ใช้ในการแก้ไขข้อมูล
+            // บันทึกลงฐานข้อมูล
             stopwatch.Restart();
             try
             {
@@ -94,11 +103,11 @@ namespace Memcach.Pages.Users
                 }
             }
 
-            // อัปเดตข้อมูลในแคช
+            // อัปเดตข้อมูลใน Cache พร้อมกำหนดเวลาหมดอายุ
             _memoryCache.Set($"User:{User.ID}", User, new MemoryCacheEntryOptions()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7),
-                SlidingExpiration = TimeSpan.FromHours(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7), // หมดอายุใน 7 วัน
+                SlidingExpiration = TimeSpan.FromHours(1) // ต่ออายุทุกครั้งที่มีการเรียกใช้ โดยต่อครั้งละ 1 ชั่วโมง
             });
 
             stopwatch.Stop();
@@ -107,6 +116,7 @@ namespace Memcach.Pages.Users
             return RedirectToPage("./Index");
         }
 
+        // เมธอดสำหรับตรวจสอบว่ามี User อยู่ในระบบหรือไม่
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.ID == id);

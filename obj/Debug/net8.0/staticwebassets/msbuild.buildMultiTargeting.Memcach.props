@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="../build/Memcach.props" />
+  <Import Project="..\build\Memcach.props" />
 </Project>

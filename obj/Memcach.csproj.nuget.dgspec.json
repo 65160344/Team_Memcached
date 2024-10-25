@@ -1,25 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "/Users/remixx/Documents/Projects/Memcach/Memcach/Memcach.csproj": {}
+    "C:\\ปี3\\อ.ยอด\\TeamMemcached\\Team_Memcached\\Memcach.csproj": {}
   },
   "projects": {
-    "/Users/remixx/Documents/Projects/Memcach/Memcach/Memcach.csproj": {
+    "C:\\ปี3\\อ.ยอด\\TeamMemcached\\Team_Memcached\\Memcach.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/remixx/Documents/Projects/Memcach/Memcach/Memcach.csproj",
+        "projectUniqueName": "C:\\ปี3\\อ.ยอด\\TeamMemcached\\Team_Memcached\\Memcach.csproj",
         "projectName": "Memcach",
-        "projectPath": "/Users/remixx/Documents/Projects/Memcach/Memcach/Memcach.csproj",
-        "packagesPath": "/Users/remixx/.nuget/packages/",
-        "outputPath": "/Users/remixx/Documents/Projects/Memcach/Memcach/obj/",
+        "projectPath": "C:\\ปี3\\อ.ยอด\\TeamMemcached\\Team_Memcached\\Memcach.csproj",
+        "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
+        "outputPath": "C:\\ปี3\\อ.ยอด\\TeamMemcached\\Team_Memcached\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/remixx/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -92,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

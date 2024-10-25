@@ -9,67 +9,81 @@ using System.Diagnostics;
 
 namespace Memcach.Pages.Users
 {
-    public class DeleteModel : PageModel
-    {
-        private readonly MemcachContext _context;
-        private readonly IMemoryCache _memoryCache;
+   // PageModel สำหรับลบข้อมูลผู้ใช้งาน
+   public class DeleteModel : PageModel
+   {
+       // ตัวแปรสำหรับเชื่อมต่อฐานข้อมูลและระบบ Cache
+       private readonly MemcachContext _context;
+       private readonly IMemoryCache _memoryCache;
 
-        public DeleteModel(MemcachContext context, IMemoryCache memoryCache)
-        {
-            _context = context;
-            _memoryCache = memoryCache;
-        }
+       // Constructor รับ database context และ memory cache จาก dependency injection
+       public DeleteModel(MemcachContext context, IMemoryCache memoryCache)
+       {
+           _context = context;
+           _memoryCache = memoryCache;
+       }
 
-        [BindProperty]
-        public User User { get; set; } = default!;
+       // Property สำหรับเก็บข้อมูล User ที่จะลบ
+       [BindProperty]
+       public User User { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            var stopwatch = Stopwatch.StartNew(); // เริ่มจับเวลา
+       // Handler method สำหรับแสดงข้อมูลผู้ใช้ที่จะลบ
+       public async Task<IActionResult> OnGetAsync(int? id)
+       {
+           var stopwatch = Stopwatch.StartNew(); // เริ่มจับเวลาการทำงาน
 
-            if (id == null)
-            {
-                Console.WriteLine($"[GET CHECK ID TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
-                return NotFound();
-            }
+           // ตรวจสอบว่ามีการส่ง id มาหรือไม่
+           if (id == null)
+           {
+               Console.WriteLine($"[GET CHECK ID TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
+               return NotFound();
+           }
 
-            var user = await _context.User.FirstOrDefaultAsync(m => m.ID == id);
-            if (user == null)
-            {
-                Console.WriteLine($"[DATABASE QUERY TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
-                return NotFound();
-            }
+           // ค้นหาข้อมูล User จากฐานข้อมูล
+           var user = await _context.User.FirstOrDefaultAsync(m => m.ID == id);
+           if (user == null)
+           {
+               // ถ้าไม่พบข้อมูลให้บันทึกเวลาและส่ง NotFound
+               Console.WriteLine($"[DATABASE QUERY TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
+               return NotFound();
+           }
 
-            User = user;
-            Console.WriteLine($"[GET USER TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
-            return Page();
-        }
+           // เก็บข้อมูล User ที่จะลบและบันทึกเวลาที่ใช้
+           User = user;
+           Console.WriteLine($"[GET USER TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
+           return Page();
+       }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            var stopwatch = Stopwatch.StartNew(); // เริ่มจับเวลา
+       // Handler method สำหรับดำเนินการลบข้อมูล
+       public async Task<IActionResult> OnPostAsync(int? id)
+       {
+           var stopwatch = Stopwatch.StartNew(); // เริ่มจับเวลาการทำงาน
 
-            if (id == null)
-            {
-                Console.WriteLine($"[CHECK ID TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
-                return NotFound();
-            }
+           // ตรวจสอบว่ามีการส่ง id มาหรือไม่
+           if (id == null)
+           {
+               Console.WriteLine($"[CHECK ID TIME] Time taken: {stopwatch.Elapsed.TotalMilliseconds} ms");
+               return NotFound();
+           }
 
-            var user = await _context.User.FindAsync(id);
-            if (user != null)
-            {
-                User = user;
+           // ค้นหาข้อมูล User ที่จะลบ
+           var user = await _context.User.FindAsync(id);
+           if (user != null)
+           {
+               User = user;
 
-                // ลบข้อมูลจาก Cache ก่อนลบผู้ใช้
-                _memoryCache.Remove($"User:{User.Email}");
+               // ลบข้อมูลออกจาก Cache ก่อน
+               _memoryCache.Remove($"User:{User.Email}");
 
-                _context.User.Remove(User);
-                await _context.SaveChangesAsync();
-            }
+               // ลบข้อมูลจากฐานข้อมูล
+               _context.User.Remove(User);
+               await _context.SaveChangesAsync();
+           }
 
-            stopwatch.Stop();
-            Console.WriteLine($"[TOTAL TIME] Total time taken for Delete: {stopwatch.Elapsed.TotalMilliseconds} ms");
-            return RedirectToPage("./Index");
-        }
-    }
+           // จบการทำงานและบันทึกเวลาที่ใช้ทั้งหมด
+           stopwatch.Stop();
+           Console.WriteLine($"[TOTAL TIME] Total time taken for Delete: {stopwatch.Elapsed.TotalMilliseconds} ms");
+           return RedirectToPage("./Index");
+       }
+   }
 }
