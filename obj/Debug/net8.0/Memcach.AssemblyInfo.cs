@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Memcach")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+392acd0ad82f25ed34c3f51ba79dfb014f25643b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3317fb6d01a440d4938fa8f42b31b6fb9a83fa5e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Memcach")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Memcach")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
