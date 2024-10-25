@@ -1,0 +1,63 @@
+@page
+@model Memcach.Pages.Users.IndexModel
+
+@{
+    ViewData["Title"] = "User Index";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">User Index</h1>
+
+    <div class="text-right mb-3">
+        <a class="btn btn-primary" asp-page="Create">Create New</a>
+        <button class="btn btn-secondary" onclick="location.href='@Url.Page("./Index", new { fetchFromCache = true })'">Fetch from Cache</button>
+        <button class="btn btn-secondary" onclick="location.href='@Url.Page("./Index", new { fetchFromDb = true })'">Fetch from Database</button>
+    </div>
+
+    <p id="elapsedTime">Time taken: @Model.ElapsedTime.TotalMilliseconds ms</p>
+
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                @if (Model.User != null && Model.User.Any())
+                {
+                    <th style="color:red;">@Html.DisplayNameFor(model => model.User[0].FirstName)</th>
+                    <th style="color:red;">@Html.DisplayNameFor(model => model.User[0].LastName)</th>
+                    <th style="color:red;">@Html.DisplayNameFor(model => model.User[0].Email)</th>
+                    <th style="color:red;">@Html.DisplayNameFor(model => model.User[0].CreatedAt)</th>
+                }
+                else
+                {
+                    <th style="color:red;">First Name</th>
+                    <th style="color:red;">Last Name</th>
+                    <th style="color:red;">Email</th>
+                    <th style="color:red;">Created At</th>
+                }
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.User)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                    <td class="text-center">
+                        <a class="btn btn-warning btn-sm" asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
+                        <a class="btn btn-info btn-sm" asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                        <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function updateTime() {
+        const elapsedTime = '@Model.ElapsedTime.TotalMilliseconds';
+        document.getElementById('elapsedTime').textContent = 'Time taken: ' + elapsedTime + ' ms';
+    }
+</script>
